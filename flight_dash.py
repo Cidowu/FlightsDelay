@@ -39,23 +39,27 @@ def wrangle(path):
     df['long_delay'] = pd.Categorical(df.long_delay)
 
     return df
+    
+
+#---CREATE FILTER FUNCTIONS---
+    
 
 def flight_filters(df):
     Airline = list(df['airline'].unique())
     Airline.sort()
     Airline = st.sidebar.selectbox('Airline', Airline, len(Airline)-1)
-    #st.header('Please Select Airline')
     return Airline
 
 def airport_filter(df):
     airport_list = [''] + list(df['airport'].unique())
     airport_list.sort()
-    #state_index = state_list.index(state_name) if state_name and state_name in state_list else 0
     return st.sidebar.selectbox('Airport', airport_list)
 
 def delay_type_filter(df):
     return st.sidebar.selectbox('Delay Type', ['dep_delay', 'arr_delay'])
 
+
+#---CREATE METRICS FUNCTIONS---
 
 def display_departure1_facts(df, airline, airport, delay_type):
     df = df[(df['airline'] == airline) & (df['airport'] == airport)]
@@ -67,7 +71,6 @@ def display_departure1_facts(df, airline, airport, delay_type):
         title = "Total Arrival Delay Time (secs)"
     df.drop_duplicates(inplace=True)
     st.metric(title, total)
-
 
 
 def display_departure_facts(df, airline, airport, delay_type):
@@ -85,6 +88,7 @@ def display_arrival_facts(df, airline, airport, delay_type):
     st.metric(title, total)
 
 
+#---CREATE HISTOGRAM FUNCTIONS---
 
 def airport_histogram(df):
 
@@ -109,6 +113,7 @@ def airport_histogram(df):
     )
 
     st.plotly_chart(fig, use_container_width=False)
+
 
 def airline_histogram(df):
 
@@ -135,9 +140,7 @@ def airline_histogram(df):
     st.plotly_chart(fig, use_container_width=False)
 
 
-
-#create unique airports    
-#unique_airport = df[~df[["airport"]].duplicated()].reset_index(drop=True)
+#---CREATE MAP FUNCTION---
 
 def map_airport1(df,  zoom):
     
@@ -172,7 +175,7 @@ def map_airport1(df,  zoom):
     return st_map
 
 
-
+#---CREATE MAIN FUNCTION---
 
 def main():
     st.set_page_config(APP_TITLE)
@@ -184,16 +187,6 @@ def main():
 
     #create unique airports    
     unique_airport = df[~df[["airport"]].duplicated()].reset_index(drop=True)
-    #st.write(unique_airport)
-
-    #---SIDE BAR---
-
-    #st.sidebar.header("Please Filter Here:")
-    #Airline = st.sidebar.multiselect(
-    #"Select the Airline:",
-    #options=df["airline"].unique(),
-    #default=df["airline"].unique()
-    #)
 
     
 
@@ -203,7 +196,8 @@ def main():
     delay_type = delay_type_filter(df)
     map = map_airport1(unique_airport, 1)
 
-    #DISPLAY METRICS
+
+    #-----DISPLAY METRICS----
     note = "Note: A negative value indicates no delay, and a positive value indicates a delay"
     
     st.subheader(f'{airline} delay facts for {airport} Airport')
@@ -219,17 +213,12 @@ def main():
     st.markdown("---")
 
 
-    #DISPLAY HISTOGRAMS
-
-    
-
+    #----DISPLAY HISTOGRAMS----
     left_column, right_column = st.columns(2)
     with left_column:
         airport_histogram(df)
     with right_column:
         airline_histogram(df)
-
-
 
 
 if __name__ == "__main__":
