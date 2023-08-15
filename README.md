@@ -1,5 +1,5 @@
 # US Flights Delay Analysis
-[Flight Dash App](https://cidowu-flightsdelay-flight-dash-a0m5bm.streamlit.app/)
+[FlightDashApp](https://cidowu-flightsdelay-flight-dash-a0m5bm.streamlit.app/)
 
 ## Software and Tools Requirements
 
